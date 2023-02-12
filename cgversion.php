@@ -1,9 +1,9 @@
 <?php 
 /**
- * @version		1.0.0
+ * @version		1.0.2
  * @package		CGChangeLog content plugin
  * @author		ConseilGouz
- * @copyright	Copyright (C) 2022 ConseilGouz. All rights reserved.
+ * @copyright	Copyright (C) 2023 ConseilGouz. All rights reserved.
  * @license		GNU/GPL v2; see LICENSE.php
  **/
 defined( '_JEXEC' ) or die( 'Restricted access' );
@@ -40,7 +40,7 @@ class plgContentCGVersion extends CMSPlugin
 		                $infos = explode('|',$chglog[2]);
 						$db = Factory::getDbo();
 						$query = $db->getQuery(true)
-							->select($db->quoteName('manifest_cache'))
+						->select($db->quoteName('manifest_cache'))
 							->from($db->quoteName('#__extensions'))
 							->where($db->quoteName('element').' like '.$db->quote($infos[0]));
 						$db->setQuery($query);
@@ -49,6 +49,12 @@ class plgContentCGVersion extends CMSPlugin
 						if ($extension->manifest_cache) {
 							$tmp = json_decode($extension->manifest_cache);
 							$str = $tmp->version;
+							if ($tmp->creationDate) { // update article modified date
+							     $update_time = date('Y-m-d 00:00:00',strtotime($tmp->creationDate));
+							     if (($update_time  > $article->modified) && self::check_update_time($article->id,$update_time)) {
+							         $article->modified = $update_time;
+							     }
+							}
 						}
 						$article->text = str_replace($chglog[0], $str, $article->text);
 		            }
@@ -56,6 +62,15 @@ class plgContentCGVersion extends CMSPlugin
 		    }
 		}
 		return true;
+	}
+	private function check_update_time($id,$time) {
+	    $db = Factory::getDbo();
+	    $query = $db->getQuery(true);
+	    $query->update($db->quoteName('#__content'))
+	           ->set($db->quoteName('modified').'='.$db->quote($time))
+	           ->where ($db->quoteName('id').'='.$id);
+	    $db->setQuery($query);
+	    return $db->execute();
 	}
 }
 ?>
