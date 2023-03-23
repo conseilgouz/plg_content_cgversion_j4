@@ -3,6 +3,18 @@
 		<element>cgversion</element>
 		<type>plugin</type>
 		<group>content</group>
+		<version>1.0.4</version>
+        <note>
+            <item>Update : 23/03/2023</item>
+        </note>
+        <addition>
+            <item>Add folder for plugins (system/switcheditor, for example)</item>
+        </addition>
+	</changelog>
+	<changelog>
+		<element>cgversion</element>
+		<type>plugin</type>
+		<group>content</group>
 		<version>1.0.3</version>
         <note>
             <item>Update : 23/03/2023</item>

@@ -1,7 +1,7 @@
 <?php 
 /**
- * @version		1.0.2
- * @package		CGChangeLog content plugin
+ * @version		1.0.4
+ * @package		CGVersion content plugin
  * @author		ConseilGouz
  * @copyright	Copyright (C) 2023 ConseilGouz. All rights reserved.
  * @license		GNU/GPL v2; see LICENSE.php
@@ -38,11 +38,19 @@ class plgContentCGVersion extends CMSPlugin
 		        if (preg_match_all($regex, $ashort, $chglogs, PREG_SET_ORDER)) { // ensure the more specific regex matches
 		            foreach ($chglogs as $chglog) {
 		                $infos = explode('|',$chglog[2]);
+						$folder = "";
+						$element = $infos[0];
+						if (strpos($infos[0],'/')) {
+						    $tmp = explode('/',$infos[0]);
+							$folder = $tmp[0];
+							$element = $tmp[1];
+						}
 						$db = Factory::getDbo();
 						$query = $db->getQuery(true)
 						->select($db->quoteName('manifest_cache'))
 							->from($db->quoteName('#__extensions'))
-							->where($db->quoteName('element').' like '.$db->quote($infos[0]).' AND '.$db->quoteName('enabled').'=1');
+							->where($db->quoteName('element').' like '.$db->quote($element));
+						if ($folder) $query->where($db->quoteName('folder').' like '.$db->quote($folder));
 						$db->setQuery($query);
 						$extension = $db->loadObject();
 						$str = "";
