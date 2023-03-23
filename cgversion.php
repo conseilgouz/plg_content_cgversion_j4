@@ -42,7 +42,7 @@ class plgContentCGVersion extends CMSPlugin
 						$query = $db->getQuery(true)
 						->select($db->quoteName('manifest_cache'))
 							->from($db->quoteName('#__extensions'))
-							->where($db->quoteName('element').' like '.$db->quote($infos[0]));
+							->where($db->quoteName('element').' like '.$db->quote($infos[0]).' AND '.$db->quoteName('enabled').'=1');
 						$db->setQuery($query);
 						$extension = $db->loadObject();
 						$str = "";
