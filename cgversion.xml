@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension group="content" method="upgrade" type="plugin" version="4">
 	<name>PLG_CONTENT_CGVERSION</name>
-	<creationDate>01/12/2022</creationDate>
+	<creationDate>2023-11-02</creationDate>
 	<author>ConseilGouz</author>
 	<authorEmail></authorEmail>
 	<authorUrl>www.conseilgouz.com</authorUrl>
 	<copyright>ConseilGouz</copyright>
 	<license>GNU/GPL</license>
-	<version>1.0.4</version>
+	<version>1.0.5</version>
 	<description>PLG_CONTENT_CGVERSION_DESC</description>
 	<files>
 		<filename plugin="cgversion">cgversion.php</filename>

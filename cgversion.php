@@ -59,7 +59,7 @@ class plgContentCGVersion extends CMSPlugin
 							$str = $tmp->version;
 							if ($tmp->creationDate) { // update article modified date
 							     $update_time = date('Y-m-d 00:00:00',strtotime($tmp->creationDate));
-							     if (($update_time  > $article->modified) && self::check_update_time($article->id,$update_time)) {
+							     if (isset($article->modified) && ($update_time  > $article->modified) && self::check_update_time($article->id,$update_time)) {
 							         $article->modified = $update_time;
 							     }
 							}
