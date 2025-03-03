@@ -1,17 +1,19 @@
 <?php 
 /**
- * @version		1.0.4
  * @package		CGVersion content plugin
  * @author		ConseilGouz
- * @copyright	Copyright (C) 2023 ConseilGouz. All rights reserved.
- * @license		GNU/GPL v2; see LICENSE.php
+ * @copyright	Copyright (C) 2025 ConseilGouz. All rights reserved.
+ * @license		GNU/GPL v3; see LICENSE.php
  **/
+namespace ConseilGouz\Plugin\Content\CGVersion\Extension; 
 defined( '_JEXEC' ) or die( 'Restricted access' );
-use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\Database\DatabaseInterface;
+use Joomla\Event\SubscriberInterface;
 
-class plgContentCGVersion extends CMSPlugin
+class Cgversion extends CMSPlugin implements SubscriberInterface
 {	
     public $myname='CGVersion';
     private $xmlParser;
@@ -20,12 +22,20 @@ class plgContentCGVersion extends CMSPlugin
         parent::__construct($subject, $config);
         $this->loadLanguage();
     }
+    public static function getSubscribedEvents(): array
+    {
+        return [
+            'onContentPrepare'	=> 'onPrepare',
+        ];
+    }
     
-	public function onContentPrepare($context, &$article, &$params, $page = 0) {
+	public function onPrepare($event) { // ($context, &$article, &$params, $page = 0) {
 		// Don't run this plugin when the content is being indexed
+		$context = $event[0];
 		if ($context == 'com_finder.indexer') {
 			return true;
 		}
+		$article = $event[1];
 		// check chglog tags
 		$shortcode = $this->params->get('shortcode','cgversion'); 
 		if (strpos($article->text, '{'.$shortcode.'') === false ) {
@@ -45,7 +55,7 @@ class plgContentCGVersion extends CMSPlugin
 							$folder = $tmp[0];
 							$element = $tmp[1];
 						}
-						$db = Factory::getDbo();
+						$db = Factory::getContainer()->get(DatabaseInterface::class);
 						$query = $db->getQuery(true)
 						->select($db->quoteName('manifest_cache'))
 							->from($db->quoteName('#__extensions'))
@@ -72,7 +82,7 @@ class plgContentCGVersion extends CMSPlugin
 		return true;
 	}
 	private function check_update_time($id,$time) {
-	    $db = Factory::getDbo();
+	    $db = Factory::getContainer()->get(DatabaseInterface::class);
 	    $query = $db->getQuery(true);
 	    $query->update($db->quoteName('#__content'))
 	           ->set($db->quoteName('modified').'='.$db->quote($time))

@@ -1,8 +1,7 @@
 <?php
 /**
-* CG Version Plugin  - Joomla 4.0.0 Module 
-* Version			: 1.0.2
-* copyright 		: Copyright (C) 2022 ConseilGouz. All rights reserved.
+* CG Version Plugin  - Joomla 4.x/5.x Module 
+* copyright 		: Copyright (C) 2025 ConseilGouz. All rights reserved.
 * license    		: http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
 */
 // No direct access to this file
@@ -15,7 +14,7 @@ use Joomla\CMS\Filesystem\File;
 
 class plgcontentcgversionInstallerScript
 {
-	private $min_joomla_version      = '3.10.0';
+	private $min_joomla_version      = '4.2.0';
 	private $min_php_version         = '7.4';
 	private $name                    = 'Plugin CG Version';
 	private $exttype                 = 'plugin';
@@ -66,30 +65,16 @@ class plgcontentcgversionInstallerScript
     }
 	private function postinstall_cleanup() {
 
-		$obsloteFolders = ['language'];
-		// Remove plugins' files which load outside of the component. If any is not fully updated your site won't crash.
-		foreach ($obsloteFolders as $folder)
-		{
-			$f = JPATH_SITE . '/plugins/plg_content_'.$this->extname.'/' . $folder;
-
-			if (!@file_exists($f) || !is_dir($f) || is_link($f))
-			{
-				continue;
-			}
-
-			Folder::delete($f);
-		}
-		$langFiles = [
+		$obsoleteFiles = [
 			sprintf("%s/language/en-GB/en-GB.plg_content_%s.ini", JPATH_ADMINISTRATOR, $this->extname),
 			sprintf("%s/language/en-GB/en-GB.plg_content_%s.sys.ini", JPATH_ADMINISTRATOR, $this->extname),
 			sprintf("%s/language/fr-FR/fr-FR.plg_content_%s.ini", JPATH_ADMINISTRATOR, $this->extname),
 			sprintf("%s/language/fr-FR/fr-FR.plg_content_%s.sys.ini", JPATH_ADMINISTRATOR, $this->extname),
+			JPATH_SITE . '/plugins/plg_content_'.$this->extname.'/cgversion.php',
+			JPATH_SITE . '/plugins/plg_content_'.$this->extname.'/language'
 		];
-		foreach ($langFiles as $file) {
-			if (@is_file($file)) {
-				File::delete($file);
-			}
-		}
+		$this->delete($obsoleteFiles);
+		
 		$db = Factory::getDbo();
         $conditions = array(
             $db->qn('type') . ' = ' . $db->q('plugin'),
@@ -161,5 +146,17 @@ class plgcontentcgversionInstallerScript
 		$db->execute();
 		Factory::getCache()->clean('_system');
 	}
+    public function delete($files = [])
+    {
+        foreach ($files as $file) {
+            if (is_dir($file)) {
+                Folder::delete($file);
+            }
+
+            if (is_file($file)) {
+                File::delete($file);
+            }
+        }
+    }
 	
 }
