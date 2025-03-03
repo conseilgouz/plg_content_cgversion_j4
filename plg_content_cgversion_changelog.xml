@@ -10,6 +10,9 @@
         <change>
             <item>Becomes a service provider</item>
         </change>
+        <addition>
+            <item>Add date parameter</item>
+        </addition>
 	</changelog>
 	<changelog>
 		<element>cgversion</element>
