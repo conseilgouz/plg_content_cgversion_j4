@@ -3,6 +3,18 @@
 		<element>cgversion</element>
 		<type>plugin</type>
 		<group>content</group>
+		<version>1.1.1</version>
+        <note>
+            <item>Update : 03/03/2025</item>
+        </note>
+        <fix>
+            <item>Wrong update date</item>
+        </fix>
+	</changelog>
+	<changelog>
+		<element>cgversion</element>
+		<type>plugin</type>
+		<group>content</group>
 		<version>1.1.0</version>
         <note>
             <item>Update : 03/03/2025</item>
